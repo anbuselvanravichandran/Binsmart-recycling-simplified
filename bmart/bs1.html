@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BinSmart: Recycling Simplified</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/framer-motion/dist/framer-motion.min.js"></script>
+  <style>
+    .fade-in {
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .hidden { display: none; }
+  </style>
+  
+  <script>
+    let users = [];
+    let recyclers = [];
+    let marketplaceItems = [];
+
+    function showSection(sectionId) {
+      document.querySelectorAll("section").forEach(section => {
+        section.classList.toggle("hidden", section.id !== sectionId);
+      });
+    }
+
+    function askNewUser() {
+      const isNewUser = confirm("Are you a new user?");
+      if (isNewUser) {
+        showSection("signup");
+      } else {
+        showSection("login");
+      }
+    }
+
+    function registerUser() {
+      const email = document.getElementById("signupEmail").value;
+      const password = document.getElementById("signupPassword").value;
+      const userType = document.querySelector('input[name="signupUserType"]:checked').value;
+      
+      if (userType === "user") {
+        users.push({ email, password });
+      } else {
+        recyclers.push({ email, password });
+      }
+      alert("Signup successful! Please log in.");
+      showSection("login");
+    }
+
+    function loginUser() {
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+      const isUser = users.some(user => user.email === email && user.password === password);
+      const isRecycler = recyclers.some(recycler => recycler.email === email && recycler.password === password);
+      
+      if (isUser || isRecycler) {
+        alert("Login successful!");
+        showSection("home");
+      } else {
+        alert("Invalid credentials. Please try again.");
+      }
+    }
+
+    function submitWaste() {
+      const productImage = document.getElementById("productImage").files[0];
+      const materialType = document.getElementById("materialType").value;
+      const quantity = document.getElementById("quantity").value;
+      
+      if (!productImage || !materialType || !quantity) {
+        alert("Please fill all fields and upload an image.");
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const imageUrl = event.target.result;
+        const product = { imageUrl, materialType, quantity };
+        marketplaceItems.push(product);
+        updateMarketplace();
+      };
+      reader.readAsDataURL(productImage);
+      
+      alert("Product listed successfully!");
+      showSection("marketplace");
+    }
+
+    function updateMarketplace() {
+      const marketplaceList = document.getElementById("marketplaceList");
+      marketplaceList.innerHTML = "";
+      
+      marketplaceItems.forEach((item, index) => {
+        const itemElement = document.createElement("div");
+        itemElement.classList.add("border", "p-2", "m-2", "rounded", "cursor-pointer");
+        itemElement.innerHTML = `
+          <img src="${item.imageUrl}" alt="Product Image" class="w-32 h-32 object-cover">
+          <p><strong>Type:</strong> ${item.materialType}</p>
+          <p><strong>Quantity:</strong> ${item.quantity}</p>
+        `;
+        itemElement.onclick = () => showProductDetails(index);
+        marketplaceList.appendChild(itemElement);
+      });
+    }
+
+    function showProductDetails(index) {
+      const product = marketplaceItems[index];
+      const productDetails = document.getElementById("productDetails");
+      productDetails.innerHTML = `
+        <img src="${product.imageUrl}" alt="Product Image" class="w-64 h-64 object-cover">
+        <p><strong>Type:</strong> ${product.materialType}</p>
+        <p><strong>Quantity:</strong> ${product.quantity}</p>
+        <button onclick="showSection('payment')" class="bg-blue-500 text-white p-2 rounded">Buy</button>
+      `;
+      showSection("product-detail");
+    }
+  </script>
+</head>
+<body class="bg-green-50 text-gray-800">
+  <header class="text-center p-4 bg-green-100">
+    <h1 class="text-2xl font-bold">BinSmart: Recycling Simplified</h1>
+  </header>
+  <style>button {
+    border: 2px solid rgb(158, 88, 88); /* Blue border */
+    padding: 10px 15px; /* Space inside the button */
+    background-color: rgb(158, 88, 88); /* White background */
+    color: black; /* Text color */
+    font-size: 16px; /* Readable text */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: all 0.3s ease-in-out; /* Smooth transition effect */
+}
+
+button:hover {
+    background-color: lightblue; /* Light blue background on hover */
+    color: white; /* Change text color */
+}
+</style>
+ 
+
+  <nav class="flex justify-around p-4 bg-green-100">
+    <button onclick="showSection('home')">Home</button>
+    <button onclick="askNewUser()">Login/Signup</button>
+    <button onclick="showSection('sell-waste')">Sell Waste</button>
+    <button onclick="showSection('marketplace')">Marketplace</button>
+    <button onclick="showSection('order-tracking')">Order Tracking</button>
+  </nav>
+
+  <section id="home" class="p-4">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <h2 id="title" class="text-4xl font-bold text-green-800 text-center leading-snug" style="font-family: 'Playfair Display', serif;">
+      Welcome to BinSmart,
+      <br>
+    
+      </style>
+      <center>
+        <style>
+          body {
+    background: url('bs2.PNG.jpg') no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+        </style>
+      </center>
+      <br><br><br>
+      <span id="subtitle" class="text-3xl font-semibold text-gray-800">
+        A Smart Solution for a Sustainable and Pollution-Free Future
+      </span>
+      <br>
+      <br>
+      <p id="description" class="text-xl font-semibold text-gray-800">
+        The modern world generates enormous amounts of waste from households and industries, including paper, plastic, metals, and electronic items—all of which are recyclable.
+        <br><br>
+        However, due to a lack of proper waste management, these materials often end up in garbage dumps, landfills, and water bodies, causing severe environmental pollution and increasing health risks such as cancer and respiratory diseases.
+      </p>
+    </h2>
+    
+    <script>
+      gsap.from("#title", { opacity: 0, y: -50, duration: 1, ease: "power2.out" });
+      gsap.from("#image", { opacity: 0, scale: 0.8, duration: 1.2, ease: "back.out(1.7)", delay: 0.3 });
+      gsap.from("#subtitle", { opacity: 0, y: 30, duration: 1, ease: "power2.out", delay: 0.6 });
+      gsap.from("#description", { opacity: 0, y: 30, duration: 1.2, ease: "power2.out", delay: 0.9 });
+    </script>
+    
+  </section>
+
+  <section id="signup" class="hidden p-4">
+    <h2>Signup</h2>
+    <input type="text" id="signupEmail" placeholder="Email">
+    <input type="password" id="signupPassword" placeholder="Password">
+    <label><input type="radio" name="signupUserType" value="user" checked> User</label>
+    <label><input type="radio" name="signupUserType" value="recycler"> Recycler</label>
+    <button onclick="registerUser()">Signup</button>
+  </section>
+
+  <section id="login" class="hidden p-4">
+    <h2>Login</h2>
+    <input type="text" id="loginEmail" placeholder="Email">
+    <input type="password" id="loginPassword" placeholder="Password">
+    <button onclick="loginUser()">Login</button>
+  </section>
+
+  <section id="sell-waste" class="hidden p-4">
+    <h2>Sell Waste</h2>
+    <input type="file" id="productImage">
+    <input type="text" id="materialType" placeholder="Type of Product">
+    <input type="text" id="quantity" placeholder="Quantity">
+    <button onclick="submitWaste()">Submit</button>
+  </section>
+
+  <section id="marketplace" class="hidden p-4">
+    <h2>Marketplace</h2>
+    <div id="marketplaceList"></div>
+  </section>
+
+  <section id="product-detail" class="hidden p-4">
+    <h2>Product Details</h2>
+    <div id="productDetails"></div>
+  </section>
+  <center>
+
+  <section id="payment" class="hidden p-4">
+    <h1 style="font-size: 50px;">Payment options</h1>
+
+    <br>
+    <br>
+
+    
+    <button class="cod">
+      Pay via Cash
+  </button>
+  <br>
+  <br>
+  <br>
+  <br>
+  <button class="nb">
+    Netbanking
+</button>
+<style> 
+    .nb {
+        background-color: rgb(33, 90, 2);
+        color: white;
+        border: none;
+        height: 40px;
+        width: 140px;
+        border-radius:20px;
+        cursor: pointer;
+        transition: opacity 1s;
+        }
+
+
+        .cod{
+            background-color: rgb(33, 90, 2);
+            color: white;
+            border-radius: 20px;
+            height: 40px;
+            width: 140px;
+            border-color: rgb(33, 90, 2);
+            cursor: pointer;
+            transition: color 1s;
+            box-shadow: 5px 5px 10 px rgba(10, 10, 10, 0.15);
+        
+              
+        
+        }
+
+        .cod:hover {
+            opacity: 0.3;
+            box-shadow: 5px 5px 10 px rgba(10, 10, 10, 0.15);
+            
+                    
+        }
+         .nb:active{
+            background-color: rgb(47, 171, 243);
+            color: white;
+         }
+
+</style>
+</center>
+
+  </section>
+
+
+  <section id="order-tracking" class="hidden p-4">
+    <h1 style="font-size: 40px;">Order-tracking</h1>
+    <br>
+    <br>
+    <p style="font-size: 25px;">Track your waste collection and recycling progress here.</p>
+
+    <label style="font-size: 25px;"for="order-id">Enter Order ID:</label>
+    <input type="text" id="order-id" placeholder="Enter Order ID">
+    <button onclick="trackOrder()">Track</button>
+
+    <div id="tracking-result" class="hidden">
+        <h2>Tracking Details</h2>
+        <p id="order-status">Fetching order status...</p>
+    </div>
+</section>
+
+</body>
+</html>
